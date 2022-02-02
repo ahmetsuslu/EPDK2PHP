@@ -22,22 +22,16 @@ try {
 
     $array = xmlrpc_parse_method_descriptions($response);
 
-    $xml_raw = "";
-    foreach($array as $array_) {
-        foreach ($array_ as $_array) {
-            foreach ($_array as $_array_) {
-                $xml_raw = $_array_;
-            }
-        }
-    }
-
-    $xml = simplexml_load_string($xml_raw);
+    $xml = $array['S:Body']['ns2:genelSorguResponse']['return'];
+   
+    $xml = simplexml_load_string($xml);
     $json = json_encode($xml);
-    $data = json_decode($json);
-    $list = $data->PetrolPiyasasiEnYuksekHacimliSekizFirmaninAkaryakitFiyatlari;
+    $data = json_decode($json, true);
+    
+    $list = $data['PetrolPiyasasiEnYuksekHacimliSekizFirmaninAkaryakitFiyatlari'];
 
-    for ($i = 0; $i < count($list); $i++) {
-        echo "<ul><li>Yakıt Tipi: ".$list[$i]->YakitTipi."</li><li>Birim: " . $list[$i]->Birim ."</li><li>Fiyat: ". $list[$i]->Fiyat. "</li></ul>";
+    foreach($list as $item) {
+        echo "<ul><li>Yakıt Tipi: " . $item['YakitTipi'] . "</li><li>Birim: " . $item['Birim'] . "</li><li>Fiyat: " . $item['Fiyat'] . "</li></ul>";
     }
 
 } catch (Exception $e) {
